@@ -381,7 +381,7 @@
       <div class="wheel-container">
         <div id="wheel" class="wheel"></div>
       </div>
-      <div id="pole-word" style="font-size: 30px; letter-spacing: 8px; margin: 15px 0;">_ _ _ _ _ _ _</div>
+      <div id="pole-word" style="font-size: 30px; letter-spacing: 8px; margin: 15px 0;">_ _ _ _ _ _ _ _</div>
       <input type="text" id="pole-input" maxlength="1" placeholder="Буква" style="text-transform: uppercase; width: 80px;" />
       <button type="button" onclick="guessLetter()">Проверить</button>
       <button type="button" onclick="spinWheel()">Крутить барабан</button>
@@ -420,11 +420,18 @@
     const hubData = { crystals: 0, cups: 0, stickers: 0, iq: 100, money: 0, rank: 'Новичок' };
 
     function updateHubUI() {
-      document.getElementById('hub-crystals').innerText = `${hubData.crystals} 💎`;
-      document.getElementById('hub-cups').innerText = `${hubData.cups} 🏆`;
-      document.getElementById('hub-stickers').innerText = `${hubData.stickers} 🖼️`;
-      document.getElementById('hub-iq').innerText = `${hubData.iq} IQ 🧠`;
-      document.getElementById('hub-money').innerText = `$${hubData.money.toLocaleString()} 💵`;
+      const crystalEl = document.getElementById('hub-crystals');
+      const cupEl = document.getElementById('hub-cups');
+      const stickerEl = document.getElementById('hub-stickers');
+      const iqEl = document.getElementById('hub-iq');
+      const moneyEl = document.getElementById('hub-money');
+      const rankEl = document.getElementById('hub-rank');
+
+      if (crystalEl) crystalEl.innerText = `${hubData.crystals} 💎`;
+      if (cupEl) cupEl.innerText = `${hubData.cups} 🏆`;
+      if (stickerEl) stickerEl.innerText = `${hubData.stickers} 🖼️`;
+      if (iqEl) iqEl.innerText = `${hubData.iq} IQ 🧠`;
+      if (moneyEl) moneyEl.innerText = `$${hubData.money.toLocaleString()} 💵`;
 
       if (hubData.iq >= 500) {
         hubData.rank = 'Мастер 👑';
@@ -434,7 +441,7 @@
         hubData.rank = 'Новичок 🎖️';
       }
 
-      document.getElementById('hub-rank').innerText = hubData.rank;
+      if (rankEl) rankEl.innerText = hubData.rank;
     }
 
     const audioCtx = (window.AudioContext || window.webkitAudioContext)
@@ -449,7 +456,7 @@
           audioCtx.resume();
         }
       } catch (error) {
-        // ignore audio resume issues in some browsers
+        // Ignore browser audio resume issues.
       }
 
       const osc = audioCtx.createOscillator();
@@ -478,7 +485,8 @@
     function openGame(id) {
       playSound('click');
       const modal = document.getElementById(`modal-${id}`);
-      if (modal) modal.style.display = 'flex';
+      if (!modal) return;
+      modal.style.display = 'flex';
 
       if (id === 'game15') init15();
       if (id === 'match') initMatch();
@@ -492,6 +500,9 @@
       document.querySelectorAll('.modal').forEach((modal) => {
         modal.style.display = 'none';
       });
+
+      const svoyaZone = document.getElementById('svoya-zone');
+      if (svoyaZone) svoyaZone.classList.add('hidden');
     }
 
     function randomInRange(min, max) {
@@ -501,24 +512,25 @@
     let guessSecret = randomInRange(1, 100);
 
     function playGuess() {
-      const input = Number(document.getElementById('guess-input').value);
+      const input = Number(document.getElementById('guess-input')?.value ?? '');
       const status = document.getElementById('guess-status');
 
       if (!Number.isInteger(input) || input < 1 || input > 100) {
-        status.innerText = 'Введите число от 1 до 100.';
+        if (status) status.innerText = 'Введите число от 1 до 100.';
         return;
       }
 
       if (input === guessSecret) {
         playSound('win');
-        status.innerText = 'Верно! +35 Кристаллов 💎';
+        if (status) status.innerText = 'Верно! +35 Кристаллов 💎';
         hubData.crystals += 35;
         updateHubUI();
         guessSecret = randomInRange(1, 100);
-        document.getElementById('guess-input').value = '';
+        const guessInput = document.getElementById('guess-input');
+        if (guessInput) guessInput.value = '';
       } else {
         playSound('fail');
-        status.innerText = input > guessSecret ? 'Меньше! 👇' : 'Больше! 👆';
+        if (status) status.innerText = input > guessSecret ? 'Меньше! 👇' : 'Больше! 👆';
       }
     }
 
@@ -551,7 +563,7 @@
       board15.push('');
 
       let shuffled = shuffle15Board();
-      while (!is15Solvable(shuffled) || shuffled.every((value, index) => (index < 15 && value === index + 1))) {
+      while (!is15Solvable(shuffled) || shuffled.every((value, index) => index < 15 && value === index + 1)) {
         shuffled = shuffle15Board();
       }
 
@@ -561,6 +573,7 @@
 
     function render15() {
       const grid = document.getElementById('grid-15');
+      if (!grid) return;
       grid.innerHTML = '';
 
       board15.forEach((value, index) => {
@@ -582,7 +595,7 @@
 
     function move15(index) {
       const emptyIndex = board15.indexOf('');
-      if (!isAdjacent15(index, emptyIndex)) return;
+      if (emptyIndex === -1 || !isAdjacent15(index, emptyIndex)) return;
 
       playSound('click');
       [board15[index], board15[emptyIndex]] = [board15[emptyIndex], board15[index]];
@@ -602,14 +615,14 @@
     function initMatch() {
       const shuffled = [...matchItems].sort(() => Math.random() - 0.5);
       const grid = document.getElementById('grid-match');
+      if (!grid) return;
       grid.innerHTML = '';
       selTiles = [];
 
-      shuffled.forEach((item, idx) => {
+      shuffled.forEach((item) => {
         const cell = document.createElement('div');
         cell.className = 'tile-match';
         cell.textContent = '❓';
-        cell.dataset.item = item;
         cell.onclick = () => {
           if (cell.classList.contains('flipped') || cell.classList.contains('matched') || selTiles.length >= 2) return;
 
@@ -652,8 +665,10 @@
 
     function initSudoku() {
       const grid = document.getElementById('grid-sudoku');
+      const status = document.getElementById('sudoku-status');
+      if (!grid) return;
       grid.innerHTML = '';
-      document.getElementById('sudoku-status').innerText = '';
+      if (status) status.innerText = '';
 
       for (let i = 0; i < 16; i++) {
         const input = document.createElement('input');
@@ -663,6 +678,7 @@
         input.max = '4';
         input.value = '';
         input.dataset.index = String(i);
+
         input.addEventListener('input', () => {
           const value = Number(input.value);
           if (input.value === '') return;
@@ -682,6 +698,7 @@
 
     function checkSudoku() {
       const cells = document.querySelectorAll('.cell-sudoku');
+      const status = document.getElementById('sudoku-status');
       let correct = true;
 
       cells.forEach((cell, idx) => {
@@ -695,50 +712,66 @@
         playSound('win');
         hubData.iq += 100;
         updateHubUI();
-        document.getElementById('sudoku-status').innerText = 'Верно! +100 IQ';
+        if (status) status.innerText = 'Верно! +100 IQ';
       } else {
         playSound('fail');
-        document.getElementById('sudoku-status').innerText = 'Ошибка! Попробуйте ещё раз.';
+        if (status) status.innerText = 'Ошибка! Попробуйте ещё раз.';
       }
     }
 
     let poleSecret = 'БРАУЗЕР';
-    let poleDisp = ['_', '_', '_', '_', '_', '_', '_', '_'];
+    let poleDisp = Array.from({ length: poleSecret.length }, () => '_');
     let wheelVal = 0;
 
     function initPole() {
       poleSecret = 'БРАУЗЕР';
-      poleDisp = Array(poleSecret.length).fill('_');
-      document.getElementById('pole-word').innerText = poleDisp.join(' ');
-      document.getElementById('pole-status').innerText = 'На барабане: 0 Кристаллов';
-      document.getElementById('pole-input').value = '';
+      poleDisp = Array.from({ length: poleSecret.length }, () => '_');
+      const poleWord = document.getElementById('pole-word');
+      const poleStatus = document.getElementById('pole-status');
+      const poleInput = document.getElementById('pole-input');
+
+      if (poleWord) poleWord.innerText = poleDisp.join(' ');
+      if (poleStatus) poleStatus.innerText = 'На барабане: 0 Кристаллов';
+      if (poleInput) poleInput.value = '';
       wheelVal = 0;
     }
 
     function spinWheel() {
       playSound('click');
       const wheel = document.getElementById('wheel');
+      if (!wheel) return;
+
+      wheelVal = 0;
       const rotate = Math.floor(Math.random() * 360) + 720;
       wheel.style.transform = `rotate(${rotate}deg)`;
 
       setTimeout(() => {
         const values = [100, 200, 500];
         wheelVal = values[Math.floor(Math.random() * values.length)];
-        document.getElementById('pole-status').innerText = `На барабане: ${wheelVal} Кристаллов!`;
+        const poleStatus = document.getElementById('pole-status');
+        if (poleStatus) poleStatus.innerText = `На барабане: ${wheelVal} Кристаллов!`;
       }, 3000);
     }
 
     function guessLetter() {
-      const input = document.getElementById('pole-input').value.trim().toUpperCase();
+      const inputEl = document.getElementById('pole-input');
       const poleWord = document.getElementById('pole-word');
-      document.getElementById('pole-input').value = '';
+      const poleStatus = document.getElementById('pole-status');
 
-      if (!input) return;
+      if (!inputEl || !poleWord) return;
+
+      const raw = inputEl.value.trim().toUpperCase();
+      inputEl.value = '';
+
+      if (!/^[A-ZА-ЯЁ]$/.test(raw)) {
+        if (poleStatus) poleStatus.innerText = 'Введите одну букву.';
+        return;
+      }
 
       let found = false;
       for (let i = 0; i < poleSecret.length; i++) {
-        if (poleSecret[i] === input && poleDisp[i] === '_') {
-          poleDisp[i] = input;
+        if (poleSecret[i] === raw && poleDisp[i] === '_') {
+          poleDisp[i] = raw;
           found = true;
         }
       }
@@ -753,6 +786,12 @@
         }
       } else {
         playSound('fail');
+      }
+
+      if (poleStatus) {
+        poleStatus.innerText = found
+          ? `Угадали! +${wheelVal || 0} Кристаллов`
+          : 'Не угадали.';
       }
 
       if (!poleDisp.includes('_')) {
@@ -773,10 +812,15 @@
 
     function showMQ() {
       const d = mQ[mStep];
-      document.getElementById('mill-prize').innerText = `Вопрос на: $${d.p}`;
-      document.getElementById('mill-question').innerText = d.q;
+      if (!d) return;
 
+      const prizeEl = document.getElementById('mill-prize');
+      const questionEl = document.getElementById('mill-question');
       const options = document.getElementById('mill-options');
+
+      if (prizeEl) prizeEl.innerText = `Вопрос на: $${d.p}`;
+      if (questionEl) questionEl.innerText = d.q;
+      if (!options) return;
       options.innerHTML = '';
 
       d.a.forEach((option, idx) => {
@@ -819,35 +863,49 @@
       if (!d) return;
 
       svoyaCost = c;
-      document.getElementById('svoya-q').innerText = d.q;
+      const qEl = document.getElementById('svoya-q');
+      const inputEl = document.getElementById('svoya-input');
+      const zoneEl = document.getElementById('svoya-zone');
+
+      if (qEl) qEl.innerText = d.q;
       svoyaAns = d.a;
-      document.getElementById('svoya-zone').classList.remove('hidden');
-      document.getElementById('svoya-input').value = '';
-      document.getElementById('svoya-input').focus();
+      if (zoneEl) zoneEl.classList.remove('hidden');
+      if (inputEl) {
+        inputEl.value = '';
+        inputEl.focus();
+      }
     }
 
     function checkSvoya() {
-      const input = document.getElementById('svoya-input').value.trim();
-      if (!svoyaAns) {
-        document.getElementById('svoya-zone').classList.add('hidden');
-        return;
-      }
+      const inputEl = document.getElementById('svoya-input');
+      const qEl = document.getElementById('svoya-q');
+      const zoneEl = document.getElementById('svoya-zone');
+      if (!inputEl || !qEl || !zoneEl) return;
 
-      document.getElementById('svoya-input').value = '';
-      document.getElementById('svoya-zone').classList.add('hidden');
+      const input = inputEl.value.trim();
+      inputEl.value = '';
+      zoneEl.classList.add('hidden');
+
+      if (!svoyaAns) return;
 
       if (input.toLowerCase() === svoyaAns.toLowerCase()) {
         playSound('win');
         hubData.iq += svoyaCost;
-        document.getElementById('svoya-q').innerText = 'Верно!';
+        qEl.innerText = 'Верно!';
         updateHubUI();
       } else {
         playSound('fail');
         hubData.iq = Math.max(0, hubData.iq - svoyaCost);
-        document.getElementById('svoya-q').innerText = 'Ошибка!';
+        qEl.innerText = 'Ошибка!';
         updateHubUI();
       }
     }
+
+    document.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape') {
+        closeGame();
+      }
+    });
 
     updateHubUI();
   </script>
