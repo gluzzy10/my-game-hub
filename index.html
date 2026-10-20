@@ -1,412 +1,784 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ultimate Gaming Hub</title>
-    <style>
-        :root {
-            --bg-main: #0a0b10;
-            --card-bg: rgba(255, 255, 255, 0.03);
-            --neon-cyan: #00f3ff;
-            --neon-magenta: #ff0055;
-            --neon-gold: #ffd700;
-            --neon-green: #39ff14;
-            --border-glow: cubic-bezier(0.4, 0, 0.2, 1);
-        }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ultimate Gaming Hub</title>
+  <style>
+    :root {
+      --bg-main: #0a0b10;
+      --card-bg: rgba(255, 255, 255, 0.03);
+      --neon-cyan: #00f3ff;
+      --neon-magenta: #ff0055;
+      --neon-gold: #ffd700;
+      --neon-green: #39ff14;
+      --text-soft: #8a8d98;
+      --panel: #121420;
+    }
 
-        body {
-            background-color: var(--bg-main);
-            color: #ffffff;
-            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-            margin: 0;
-            padding: 20px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            min-height: 100vh;
-            overflow-x: hidden;
-        }
+    * { box-sizing: border-box; }
 
-        /* Панель наград */
-        .dashboard {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
-            gap: 15px;
-            width: 100%;
-            max-width: 1000px;
-            background: var(--card-bg);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
-            padding: 20px;
-            border-radius: 16px;
-            margin-bottom: 30px;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
-        }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      padding: 20px;
+      background: var(--bg-main);
+      color: #fff;
+      font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      overflow-x: hidden;
+    }
 
-        .stat-card {
-            text-align: center;
-            padding: 10px;
-            background: rgba(0,0,0,0.2);
-            border-radius: 10px;
-            border: 1px solid rgba(255,255,255,0.05);
-        }
-        .stat-card h3 { margin: 0; font-size: 11px; color: #8a8d98; text-transform: uppercase; letter-spacing: 1px;}
-        .stat-card p { margin: 8px 0 0 0; font-size: 16px; font-weight: bold; color: #fff; }
+    .dashboard {
+      width: 100%;
+      max-width: 1000px;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+      gap: 15px;
+      background: var(--card-bg);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 16px;
+      padding: 20px;
+      margin-bottom: 30px;
+      backdrop-filter: blur(10px);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+    }
 
-        /* Сетка выбора игр */
-        .games-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 25px;
-            width: 100%;
-            max-width: 1000px;
-        }
+    .stat-card {
+      text-align: center;
+      padding: 10px;
+      background: rgba(0,0,0,0.2);
+      border-radius: 10px;
+      border: 1px solid rgba(255,255,255,0.05);
+    }
 
-        .game-menu-card {
-            background: var(--card-bg);
-            border: 1px solid rgba(255,255,255,0.1);
-            border-radius: 16px;
-            padding: 25px;
-            text-align: center;
-            transition: all 0.3s var(--border-glow);
-            cursor: pointer;
-        }
-        .game-menu-card:hover {
-            transform: translateY(-5px);
-            background: rgba(255, 255, 255, 0.06);
-        }
-        .card-guess:hover { border-color: var(--neon-magenta); box-shadow: 0 0 15px rgba(255,0,85,0.3); }
-        .card-15:hover { border-color: var(--neon-cyan); box-shadow: 0 0 15px rgba(0,243,255,0.3); }
-        .card-match:hover { border-color: var(--neon-green); box-shadow: 0 0 15px rgba(57,255,20,0.3); }
-        .card-sudoku:hover { border-color: #9d4edd; box-shadow: 0 0 15px rgba(157,78,221,0.3); }
-        .card-pole:hover { border-color: #ff6b6b; box-shadow: 0 0 15px rgba(255,107,107,0.3); }
-        .card-million:hover { border-color: var(--neon-gold); box-shadow: 0 0 15px rgba(255,215,0,0.3); }
-        .card-svoya:hover { border-color: #3a86ff; box-shadow: 0 0 15px rgba(58,134,255,0.3); }
+    .stat-card h3 {
+      margin: 0;
+      font-size: 11px;
+      color: var(--text-soft);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
 
-        .game-menu-card h2 { margin-top: 0; font-size: 22px; }
-        .game-menu-card p { color: #8a8d98; font-size: 14px; min-height: 40px; }
+    .stat-card p {
+      margin: 8px 0 0;
+      font-size: 16px;
+      font-weight: bold;
+      color: #fff;
+    }
 
-        /* Модальные окна */
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(5, 6, 10, 0.95);
-            z-index: 100;
-            justify-content: center;
-            align-items: center;
-            backdrop-filter: blur(15px);
-        }
-        .modal-content {
-            background: #121420;
-            border: 2px solid #fff;
-            border-radius: 24px;
-            padding: 35px;
-            max-width: 500px;
-            width: 90%;
-            max-height: 85vh;
-            overflow-y: auto;
-            position: relative;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.8);
-            text-align: center;
-        }
-        .close-btn {
-            position: absolute;
-            top: 15px; right: 20px;
-            font-size: 30px; cursor: pointer; color: #8a8d98;
-        }
-        .close-btn:hover { color: #fff; }
+    .games-grid {
+      width: 100%;
+      max-width: 1000px;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 25px;
+    }
 
-        /* Элементы управления */
-        button {
-            background: rgba(255,255,255,0.08);
-            color: white; border: 1px solid rgba(255,255,255,0.2);
-            padding: 12px 24px; border-radius: 8px; cursor: pointer;
-            font-weight: 600; transition: all 0.2s; margin: 5px;
-        }
-        button:hover { background: #fff; color: #000; }
-        input[type="number"], input[type="text"] {
-            background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.2);
-            padding: 12px; border-radius: 8px; color: white; text-align: center; font-size: 16px; outline: none;
-        }
+    .game-menu-card {
+      background: var(--card-bg);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 16px;
+      padding: 25px;
+      text-align: center;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      cursor: pointer;
+    }
 
-        /* Пятнашки */
-        .grid-15 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin: 20px auto; max-width: 260px; }
-        .tile-15 { width: 60px; height: 60px; background: rgba(0,243,255,0.05); border: 2px solid var(--neon-cyan);
-            border-radius: 8px; display: flex; justify-content: center; align-items: center; font-size: 20px; font-weight: bold; cursor: pointer; }
-        .tile-15.empty { background: transparent; border-color: transparent; cursor: default; }
+    .game-menu-card:hover {
+      transform: translateY(-5px);
+      background: rgba(255, 255, 255, 0.06);
+    }
 
-        /* Найди совпадение */
-        .grid-match { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin: 20px auto; max-width: 280px; }
-        .tile-match { width: 60px; height: 60px; background: #222538; border-radius: 8px; display: flex;
-            justify-content: center; align-items: center; font-size: 24px; cursor: pointer; border: 1px solid rgba(255,255,255,0.1); }
-        .tile-match.flipped { background: rgba(57,255,20,0.1); border-color: var(--neon-green); }
+    .card-guess:hover { border-color: var(--neon-magenta); box-shadow: 0 0 15px rgba(255,0,85,0.3); }
+    .card-15:hover { border-color: var(--neon-cyan); box-shadow: 0 0 15px rgba(0,243,255,0.3); }
+    .card-match:hover { border-color: var(--neon-green); box-shadow: 0 0 15px rgba(57,255,20,0.3); }
+    .card-sudoku:hover { border-color: #9d4edd; box-shadow: 0 0 15px rgba(157,78,221,0.3); }
+    .card-pole:hover { border-color: #ff6b6b; box-shadow: 0 0 15px rgba(255,107,107,0.3); }
+    .card-million:hover { border-color: var(--neon-gold); box-shadow: 0 0 15px rgba(255,215,0,0.3); }
+    .card-svoya:hover { border-color: #3a86ff; box-shadow: 0 0 15px rgba(58,134,255,0.3); }
 
-        /* Судоку */
-        .grid-sudoku { display: grid; grid-template-columns: repeat(4, 1fr); gap: 4px; margin: 20px auto; max-width: 220px; }
-        .cell-sudoku { width: 50px; height: 50px; font-size: 18px; }
+    .game-menu-card h2 {
+      margin-top: 0;
+      font-size: 22px;
+    }
 
-        /* Поле чудес */
-        .wheel-container { text-align: center; margin: 20px 0; }
-        .wheel { width: 150px; height: 150px; border-radius: 50%; border: 6px solid var(--neon-gold); display: inline-block;
-            transition: transform 3s cubic-bezier(0.1, 1, 0.1, 1); background: conic-gradient(#ff6b6b 0% 25%, #4ecdc4 25% 50%, #ffe66d 50% 75%, #1a535c 75% 100%); }
+    .game-menu-card p {
+      color: var(--text-soft);
+      font-size: 14px;
+      min-height: 40px;
+    }
 
-        /* Списки вопросов */
-        .quiz-option { display: block; width: 100%; text-align: left; margin: 10px 0; background: rgba(255,215,0,0.05); border-color: rgba(255,215,0,0.3); }
-        .quiz-option:hover { background: var(--neon-gold); color: #000; }
-    </style>
+    .modal {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(5, 6, 10, 0.95);
+      z-index: 100;
+      justify-content: center;
+      align-items: center;
+      backdrop-filter: blur(15px);
+    }
+
+    .modal-content {
+      background: var(--panel);
+      border: 2px solid #fff;
+      border-radius: 24px;
+      padding: 35px;
+      max-width: 500px;
+      width: 90%;
+      max-height: 85vh;
+      overflow-y: auto;
+      position: relative;
+      box-shadow: 0 20px 50px rgba(0,0,0,0.8);
+      text-align: center;
+    }
+
+    .close-btn {
+      position: absolute;
+      top: 15px;
+      right: 20px;
+      font-size: 30px;
+      cursor: pointer;
+      color: var(--text-soft);
+    }
+
+    .close-btn:hover { color: #fff; }
+
+    button {
+      background: rgba(255,255,255,0.08);
+      color: white;
+      border: 1px solid rgba(255,255,255,0.2);
+      padding: 12px 24px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: all 0.2s;
+      margin: 5px;
+    }
+
+    button:hover {
+      background: #fff;
+      color: #000;
+    }
+
+    input[type="number"], input[type="text"] {
+      background: rgba(0,0,0,0.3);
+      border: 1px solid rgba(255,255,255,0.2);
+      padding: 12px;
+      border-radius: 8px;
+      color: white;
+      text-align: center;
+      font-size: 16px;
+      outline: none;
+    }
+
+    .grid-15 {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+      margin: 20px auto;
+      max-width: 260px;
+    }
+
+    .tile-15 {
+      width: 60px;
+      height: 60px;
+      background: rgba(0,243,255,0.05);
+      border: 2px solid var(--neon-cyan);
+      border-radius: 8px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 20px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .tile-15.empty {
+      background: transparent;
+      border-color: transparent;
+      cursor: default;
+    }
+
+    .grid-match {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+      margin: 20px auto;
+      max-width: 280px;
+    }
+
+    .tile-match {
+      width: 60px;
+      height: 60px;
+      background: #222538;
+      border-radius: 8px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 24px;
+      cursor: pointer;
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+
+    .tile-match.flipped {
+      background: rgba(57,255,20,0.1);
+      border-color: var(--neon-green);
+    }
+
+    .grid-sudoku {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 4px;
+      margin: 20px auto;
+      max-width: 220px;
+    }
+
+    .cell-sudoku {
+      width: 50px;
+      height: 50px;
+      font-size: 18px;
+    }
+
+    .wheel-container {
+      text-align: center;
+      margin: 20px 0;
+    }
+
+    .wheel {
+      width: 150px;
+      height: 150px;
+      border-radius: 50%;
+      border: 6px solid var(--neon-gold);
+      display: inline-block;
+      transition: transform 3s cubic-bezier(0.1, 1, 0.1, 1);
+      background: conic-gradient(#ff6b6b 0% 25%, #4ecdc4 25% 50%, #ffe66d 50% 75%, #1a535c 75% 100%);
+    }
+
+    .quiz-option {
+      display: block;
+      width: 100%;
+      text-align: left;
+      margin: 10px 0;
+      background: rgba(255,215,0,0.05);
+      border-color: rgba(255,215,0,0.3);
+    }
+
+    .quiz-option:hover {
+      background: var(--neon-gold);
+      color: #000;
+    }
+
+    .svoya-list {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 10px;
+      margin: 15px 0;
+    }
+
+    .svoya-cat {
+      min-width: 110px;
+    }
+
+    .hidden { display: none; }
+    .status-line { min-height: 25px; margin-top: 10px; }
+  </style>
 </head>
 <body>
+  <div class="dashboard">
+    <div class="stat-card"><h3>Кристаллы</h3><p id="hub-crystals">0 💎</p></div>
+    <div class="stat-card"><h3>Кубки</h3><p id="hub-cups">0 🏆</p></div>
+    <div class="stat-card"><h3>Стикеры</h3><p id="hub-stickers">0 🖼️</p></div>
+    <div class="stat-card"><h3>Интеллект</h3><p id="hub-iq">100 IQ 🧠</p></div>
+    <div class="stat-card"><h3>Банк</h3><p id="hub-money">$0 💵</p></div>
+    <div class="stat-card"><h3>Ранг</h3><p id="hub-rank">Новичок 🎖️</p></div>
+  </div>
 
-    <!-- Единая панель наград хаба -->
-    <div class="dashboard">
-        <div class="stat-card"><h3>Кристаллы</h3><p id="hub-crystals">0 💎</p></div>
-        <div class="stat-card"><h3>Кубки</h3><p id="hub-cups">0 🏆</p></div>
-        <div class="stat-card"><h3>Стикеры</h3><p id="hub-stickers">0 🖼️</p></div>
-        <div class="stat-card"><h3>Интеллект</h3><p id="hub-iq">100 IQ 🧠</p></div>
-        <div class="stat-card"><h3>Банк</h3><p id="hub-money">$0 💵</p></div>
-        <div class="stat-card"><h3>Ранг</h3><p id="hub-rank">Новичок 🎖️</p></div>
+  <div class="games-grid">
+    <div class="game-menu-card card-guess" onclick="openGame('guess')">
+      <h2>Угадай число</h2>
+      <p>Киберпанк-угадайка чисел от 1 до 100.</p>
+      <button type="button">Играть</button>
     </div>
-
-    <!-- Меню выбора игр -->
-    <div class="games-grid">
-        <div class="game-menu-card card-guess" onclick="openGame('guess')">
-            <h2>Угадай число</h2><p>Киберпанк-угадайка чисел от 1 до 100.</p><button>Играть</button>
-        </div>
-        <div class="game-menu-card card-15" onclick="openGame('game15')">
-            <h2>Пятнашки (15)</h2><p>Классическая головоломка скольжения блоков.</p><button>Играть</button>
-        </div>
-        <div class="game-menu-card card-match" onclick="openGame('match')">
-            <h2>Найди пару</h2><p>Тренировка памяти. Ищите одинаковые карточки.</p><button>Играть</button>
-        </div>
-        <div class="game-menu-card card-sudoku" onclick="openGame('sudoku')">
-            <h2>Судоку (Мини)</h2><p>Матрица логики 4х4 для разгона ума.</p><button>Играть</button>
-        </div>
-        <div class="game-menu-card card-pole" onclick="openGame('pole')">
-            <h2>Поле чудес</h2><p>Крутите барабан и открывайте секретное слово.</p><button>Играть</button>
-        </div>
-        <div class="game-menu-card card-million" onclick="openGame('million')">
-            <h2>Миллионер</h2><p>Ответьте на вопросы и заберите миллион.</p><button>Играть</button>
-        </div>
-        <div class="game-menu-card card-svoya" onclick="openGame('svoya')">
-            <h2>Своя игра</h2><p>Рискуйте очками, выбирая дорогие темы.</p><button>Играть</button>
-        </div>
+    <div class="game-menu-card card-15" onclick="openGame('game15')">
+      <h2>Пятнашки (15)</h2>
+      <p>Классическая головоломка скольжения блоков.</p>
+      <button type="button">Играть</button>
     </div>
+    <div class="game-menu-card card-match" onclick="openGame('match')">
+      <h2>Найди пару</h2>
+      <p>Тренировка памяти. Ищите одинаковые карточки.</p>
+      <button type="button">Играть</button>
+    </div>
+    <div class="game-menu-card card-sudoku" onclick="openGame('sudoku')">
+      <h2>Судоку (Мини)</h2>
+      <p>Матрица логики 4х4 для разгона ума.</p>
+      <button type="button">Играть</button>
+    </div>
+    <div class="game-menu-card card-pole" onclick="openGame('pole')">
+      <h2>Поле чудес</h2>
+      <p>Крутите барабан и открывайте секретное слово.</p>
+      <button type="button">Играть</button>
+    </div>
+    <div class="game-menu-card card-million" onclick="openGame('million')">
+      <h2>Миллионер</h2>
+      <p>Ответьте на вопросы и заберите миллион.</p>
+      <button type="button">Играть</button>
+    </div>
+    <div class="game-menu-card card-svoya" onclick="openGame('svoya')">
+      <h2>Своя игра</h2>
+      <p>Рискуйте очками, выбирая дорогие темы.</p>
+      <button type="button">Играть</button>
+    </div>
+  </div>
 
-    <!-- Модальные окна игр -->
-    <div id="modal-guess" class="modal"><div class="modal-content" style="border-color: var(--neon-magenta)">
-        <span class="close-btn" onclick="closeGame()">&times;</span>
-        <h2>Угадай число (1-100)</h2>
-        <input type="number" id="guess-input" placeholder="50"><br><br>
-        <button onclick="playGuess()">Проверить</button>
-        <p id="guess-status"></p>
-    </div></div>
+  <div id="modal-guess" class="modal">
+    <div class="modal-content" style="border-color: var(--neon-magenta)">
+      <span class="close-btn" onclick="closeGame()">&times;</span>
+      <h2>Угадай число (1-100)</h2>
+      <input type="number" id="guess-input" placeholder="50" min="1" max="100" /><br><br>
+      <button type="button" onclick="playGuess()">Проверить</button>
+      <p id="guess-status" class="status-line"></p>
+    </div>
+  </div>
 
-    <div id="modal-game15" class="modal"><div class="modal-content" style="border-color: var(--neon-cyan)">
-        <span class="close-btn" onclick="closeGame()">&times;</span>
-        <h2>Пятнашки</h2>
-        <div class="grid-15" id="grid-15"></div>
-        <button onclick="init15()">Перемешать</button>
-    </div></div>
+  <div id="modal-game15" class="modal">
+    <div class="modal-content" style="border-color: var(--neon-cyan)">
+      <span class="close-btn" onclick="closeGame()">&times;</span>
+      <h2>Пятнашки</h2>
+      <div class="grid-15" id="grid-15"></div>
+      <button type="button" onclick="init15()">Перемешать</button>
+    </div>
+  </div>
 
-    <div id="modal-match" class="modal"><div class="modal-content" style="border-color: var(--neon-green)">
-        <span class="close-btn" onclick="closeGame()">&times;</span>
-        <h2>Найди пару</h2>
-        <div class="grid-match" id="grid-match"></div>
-    </div></div>
+  <div id="modal-match" class="modal">
+    <div class="modal-content" style="border-color: var(--neon-green)">
+      <span class="close-btn" onclick="closeGame()">&times;</span>
+      <h2>Найди пару</h2>
+      <div class="grid-match" id="grid-match"></div>
+    </div>
+  </div>
 
-Используйте код с осторожностью.
-×
-Судоку 4х4
+  <div id="modal-sudoku" class="modal">
+    <div class="modal-content" style="border-color: #9d4edd">
+      <span class="close-btn" onclick="closeGame()">&times;</span>
+      <h2>Судоку 4x4</h2>
+      <div class="grid-sudoku" id="grid-sudoku"></div>
+      <button type="button" onclick="checkSudoku()">Проверить</button>
+      <p id="sudoku-status" class="status-line"></p>
+    </div>
+  </div>
 
-Проверить
+  <div id="modal-pole" class="modal">
+    <div class="modal-content" style="border-color: #ff6b6b">
+      <span class="close-btn" onclick="closeGame()">&times;</span>
+      <h2>Поле чудес</h2>
+      <p>Тема: Главный инструмент разработчика.</p>
+      <div class="wheel-container">
+        <div id="wheel" class="wheel"></div>
+      </div>
+      <div id="pole-word" style="font-size: 30px; letter-spacing: 8px; margin: 15px 0;">_ _ _ _ _ _ _</div>
+      <input type="text" id="pole-input" maxlength="1" placeholder="Буква" style="text-transform: uppercase; width: 80px;" />
+      <button type="button" onclick="guessLetter()">Проверить</button>
+      <button type="button" onclick="spinWheel()">Крутить барабан</button>
+      <p id="pole-status" class="status-line">На барабане: 0 Кристаллов</p>
+    </div>
+  </div>
 
-×
-Поле чудес
-Тема: Главный инструмент разработчика.
+  <div id="modal-million" class="modal">
+    <div class="modal-content" style="border-color: var(--neon-gold)">
+      <span class="close-btn" onclick="closeGame()">&times;</span>
+      <h2>Кто хочет стать миллионером?</h2>
+      <p id="mill-prize">Вопрос на: $1,000</p>
+      <p id="mill-question"></p>
+      <div id="mill-options"></div>
+    </div>
+  </div>
 
-Крутить барабан
+  <div id="modal-svoya" class="modal">
+    <div class="modal-content" style="border-color: #3a86ff">
+      <span class="close-btn" onclick="closeGame()">&times;</span>
+      <h2>Своя игра</h2>
+      <div class="svoya-list">
+        <button type="button" class="svoya-cat" onclick="askSvoya(100)">Космос: 100</button>
+        <button type="button" class="svoya-cat" onclick="askSvoya(300)">История: 300</button>
+        <button type="button" class="svoya-cat" onclick="askSvoya(500)">Кино: 500</button>
+      </div>
+      <div id="svoya-zone" class="hidden">
+        <p id="svoya-q"></p>
+        <input type="text" id="svoya-input" placeholder="Ваш ответ" />
+        <button type="button" onclick="checkSvoya()">Отправить</button>
+      </div>
+    </div>
+  </div>
 
+  <script>
+    const hubData = { crystals: 0, cups: 0, stickers: 0, iq: 100, money: 0, rank: 'Новичок' };
 
+    function updateHubUI() {
+      document.getElementById('hub-crystals').innerText = `${hubData.crystals} 💎`;
+      document.getElementById('hub-cups').innerText = `${hubData.cups} 🏆`;
+      document.getElementById('hub-stickers').innerText = `${hubData.stickers} 🖼️`;
+      document.getElementById('hub-iq').innerText = `${hubData.iq} IQ 🧠`;
+      document.getElementById('hub-money').innerText = `$${hubData.money.toLocaleString()} 💵`;
 
+      if (hubData.iq >= 500) {
+        hubData.rank = 'Мастер 👑';
+      } else if (hubData.iq >= 250) {
+        hubData.rank = 'Знаток 🎖️';
+      } else {
+        hubData.rank = 'Новичок 🎖️';
+      }
 
-ОК
+      document.getElementById('hub-rank').innerText = hubData.rank;
+    }
 
-×
-Кто хочет стать миллионером?
-Вопрос на: $1,000
+    const audioCtx = window.AudioContext || window.webkitAudioContext ? new (window.AudioContext || window.webkitAudioContext)() : null;
 
+    function playSound(type) {
+      if (!audioCtx) return;
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
 
-×
-Своя игра
+      if (type === 'click') {
+        osc.frequency.setValueAtTime(500, audioCtx.currentTime);
+        gain.gain.setValueAtTime(0.05, audioCtx.currentTime);
+        osc.start();
+        osc.stop(audioCtx.currentTime + 0.05);
+      } else if (type === 'win') {
+        osc.frequency.setValueAtTime(600, audioCtx.currentTime);
+        gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
+        osc.start();
+        osc.stop(audioCtx.currentTime + 0.3);
+      } else if (type === 'fail') {
+        osc.frequency.setValueAtTime(150, audioCtx.currentTime);
+        gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
+        osc.start();
+        osc.stop(audioCtx.currentTime + 0.2);
+      }
+    }
 
-Космос: 100
-История: 300
-Кино: 500
+    function openGame(id) {
+      playSound('click');
+      document.getElementById(`modal-${id}`).style.display = 'flex';
 
+      if (id === 'game15') init15();
+      if (id === 'match') initMatch();
+      if (id === 'sudoku') initSudoku();
+      if (id === 'pole') initPole();
+      if (id === 'million') initMillion();
+    }
 
+    function closeGame() {
+      playSound('click');
+      document.querySelectorAll('.modal').forEach((modal) => {
+        modal.style.display = 'none';
+      });
+    }
 
+    let guessSecret = Math.floor(Math.random() * 100) + 1;
 
+    function playGuess() {
+      const input = parseInt(document.getElementById('guess-input').value, 10);
+      const status = document.getElementById('guess-status');
 
+      if (Number.isNaN(input)) {
+        status.innerText = 'Введите число от 1 до 100.';
+        return;
+      }
 
-Отправить
+      if (input === guessSecret) {
+        playSound('win');
+        status.innerText = 'Верно! +35 Кристаллов 💎';
+        hubData.crystals += 35;
+        updateHubUI();
+        guessSecret = Math.floor(Math.random() * 100) + 1;
+        document.getElementById('guess-input').value = '';
+      } else {
+        playSound('fail');
+        status.innerText = input > guessSecret ? 'Меньше! 👇' : 'Больше! 👆';
+      }
+    }
 
-// Баланс хаба
-let hubData = { crystals: 0, cups: 0, stickers: 0, iq: 100, money: 0, rank: "Новичок" };
-function updateHubUI() {
-document.getElementById('hub-crystals').innerText = ${hubData.crystals} 💎;
-document.getElementById('hub-cups').innerText = ${hubData.cups} 🏆;
-document.getElementById('hub-stickers').innerText = ${hubData.stickers} 🖼️;
-document.getElementById('hub-iq').innerText = ${hubData.iq} IQ 🧠;
-document.getElementById('hub-money').innerText = $${hubData.money.toLocaleString()} 💵;
-if(hubData.iq >= 500) hubData.rank = "Мастер 👑";
-else if(hubData.iq >= 250) hubData.rank = "Знаток 🎖️";
-document.getElementById('hub-rank').innerText = hubData.rank;
-}
-// Аудио (Генерация частот)
-const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-function playSound(type) {
-const osc = audioCtx.createOscillator();
-const gain = audioCtx.createGain();
-osc.connect(gain); gain.connect(audioCtx.destination);
-if (type === 'click') {
-osc.frequency.setValueAtTime(500, audioCtx.currentTime);
-gain.gain.setValueAtTime(0.05, audioCtx.currentTime);
-osc.start(); osc.stop(audioCtx.currentTime + 0.05);
-} else if (type === 'win') {
-osc.frequency.setValueAtTime(600, audioCtx.currentTime);
-gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
-osc.start(); osc.stop(audioCtx.currentTime + 0.3);
-} else if (type === 'fail') {
-osc.frequency.setValueAtTime(150, audioCtx.currentTime);
-gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
-osc.start(); osc.stop(audioCtx.currentTime + 0.2);
-}
-}
-// Окна
-function openGame(id) {
-playSound('click');
-document.getElementById(modal-${id}).style.display = 'flex';
-if(id === 'game15') init15();
-if(id === 'match') initMatch();
-if(id === 'sudoku') initSudoku();
-if(id === 'pole') initPole();
-if(id === 'million') initMillion();
-}
-function closeGame() {
-playSound('click');
-document.querySelectorAll('.modal').forEach(m => m.style.display = 'none');
-}
-// 1. Угадай число
-let guessSecret = Math.floor(Math.random() * 100) + 1;
-function playGuess() {
-let input = parseInt(document.getElementById('guess-input').value);
-let status = document.getElementById('guess-status');
-if(input === guessSecret) {
-playSound('win'); status.innerText = "Верно! +35 Кристаллов 💎";
-hubData.crystals += 35; updateHubUI();
-guessSecret = Math.floor(Math.random() * 100) + 1;
-} else {
-playSound('fail');
-status.innerText = input > guessSecret ? "Меньше! 👇" : "Больше! 👆";
-}
-}
-// 2. Пятнашки
-let board15 = [];
-function init15() {
-board15 = [...Array(15).keys()].map(x => x + 1); board15.push("");
-board15.sort(() => Math.random() - 0.5); render15();
-}
-function render15() {
-const grid = document.getElementById('grid-15'); grid.innerHTML = '';
-board15.forEach((val, idx) => {
-let cell = document.createElement('div');
-cell.className = tile-15 ${val === "" ? "empty" : ""};
-cell.innerText = val; cell.onclick = () => move15(idx);
-grid.appendChild(cell);
-});
-}
-function move15(idx) {
-let empty = board15.indexOf("");
-if([idx-1, idx+1, idx-4, idx+4].includes(empty)) {
-playSound('click'); board15[empty] = board15[idx]; board15[idx] = "";
-render15(); if(board15.slice(0,15).every((v,i) => v === i+1)) { playSound('win'); hubData.cups++; updateHubUI(); alert("Победа! Кубок ваш!"); }
-}
-}
-// 3. Найди пару
-let matchItems = ['👾','👾','🚀','🚀','⚡','⚡','🛡️','🛡️','💎','💎','🍎','🍎','🎈','🎈','🍀','🍀'];
-let selTiles = [];
-function initMatch() {
-matchItems.sort(() => Math.random() - 0.5);
-const grid = document.getElementById('grid-match'); grid.innerHTML = '';
-matchItems.forEach((item, idx) => {
-let cell = document.createElement('div'); cell.className = 'tile-match'; cell.innerText = '❓';
-cell.onclick = () => {
-if(cell.classList.contains('flipped') || selTiles.length >= 2) return;
-playSound('click'); cell.innerText = item; cell.classList.add('flipped'); selTiles.push(cell);
-if(selTiles.length === 2) {
-if(selTiles[0].innerText === selTiles[1].innerText) {
-selTiles = [];
-if(document.querySelectorAll('.tile-match.flipped').length === 16) { playSound('win'); hubData.stickers++; updateHubUI(); alert("Найдено! +1 Стикер!"); }
-} else {
-playSound('fail'); setTimeout(() => { selTiles.forEach(t => { t.innerText = '❓'; t.classList.remove('flipped'); }); selTiles = []; }, 600);
-}
-}
-};
-grid.appendChild(cell);
-});
-}
-// 4. Судоку
-const sudSol =;
-function initSudoku() {
-const grid = document.getElementById('grid-sudoku'); grid.innerHTML = '';
-for(let i=0; i<16; i++) {
-let input = document.createElement('input'); input.type = 'number'; input.className = 'cell-sudoku';
-if([0,5,10,15].includes(i)) { input.value = sudSol[i]; input.disabled = true; }
-grid.appendChild(input);
-}
-}
-function checkSudoku() {
-let correct = true;
-document.querySelectorAll('.cell-sudoku').forEach((inp, i) => { if(parseInt(inp.value) !== sudSol[i]) correct = false; });
-if(correct) { playSound('win'); hubData.iq += 100; updateHubUI(); document.getElementById('sudoku-status').innerText = "Верно! +100 IQ"; }
-else { playSound('fail'); document.getElementById('sudoku-status').innerText = "Ошибка!"; }
-}
-// 5. Поле чудес
-let poleSecret = "БРАУЗЕР"; let poleDisp = ["","","","","","",""]; let wheelVal = 100;
-function initPole() { poleDisp = ["","","","","","",""]; document.getElementById('pole-word').innerText = poleDisp.join(" "); }
-function spinWheel() {
-playSound('click'); document.getElementById('wheel').style.transform = rotate(${Math.floor(Math.random()*360)+720}deg);
-setTimeout(() => { wheelVal = [100, 200, 500][Math.floor(Math.random()*3)]; document.getElementById('pole-status').innerText = На барабане: ${wheelVal} Кристаллов!; }, 3000);
-}
-function guessLetter() {
-let l = document.getElementById('pole-input').value.toUpperCase(); document.getElementById('pole-input').value = "";
-let f = false; for(let i=0; i<poleSecret.length; i++) { if(poleSecret[i] === l && poleDisp[i] === "") { poleDisp[i] = l; f = true; } }
-document.getElementById('pole-word').innerText = poleDisp.join(" ");
-if(f) { playSound('win'); hubData.crystals += wheelVal; updateHubUI(); } else { playSound('fail'); }
-if(!poleDisp.includes("")) { alert("Вы выиграли Главный Приз: Автомобиль! 🚗"); }
-}
-// 6. Миллионер
-let mStep = 0; const mQ = [
-{q: "Что такое HTML?", a: ["Язык разметки", "Язык программирования", "База данных", "Стиль"], c: 0, p: 1000},
-{q: "Где хранятся стили сайта?", a: ["HTML", "CSS", "JS", "PHP"], c: 1, p: 5000}
-];
-function initMillion() { mStep = 0; showMQ(); }
-function showMQ() {
-let d = mQ[mStep]; document.getElementById('mill-prize').innerText = Вопрос на: $${d.p}; document.getElementById('mill-question').innerText = d.q;
-let z = document.getElementById('mill-options'); z.innerHTML = '';
-d.a.forEach((o, i) => { let b = document.createElement('button'); b.className = 'quiz-option'; b.innerText = o; b.onclick = () => {
-if(i === d.c) { playSound('win'); if(mStep === mQ.length-1) { hubData.money += d.p; updateHubUI(); alert("Вы выиграли миллион!"); closeGame(); } else { mStep++; showMQ(); } }
-else { playSound('fail'); alert("Игра окончена!"); closeGame(); }
-}; z.appendChild(b); });
-}
-// 7. Своя игра
-let svoyaCost = 0; let svoyaAns = "";
-const svoyaDb = { 100: {q: "Спутник Земли?", a: "Луна"}, 300: {q: "Столица России?", a: "Москва"}, 500: {q: "Создатель Linux?", a: "Линус Торвальдс"} };
-function askSvoya(c) { playSound('click'); svoyaCost = c; let d = svoyaDb[c]; document.getElementById('svoya-q').innerText = d.q; svoyaAns = d.a; document.getElementById('svoya-ans-zone').style.display = 'block'; }
-function checkSvoya() {
-let u = document.getElementById('svoya-input').value.trim(); document.getElementById('svoya-input').value = ""; document.getElementById('svoya-ans-zone').style.display = 'none';
-if(u.toLowerCase() === svoyaAns.toLowerCase()) { playSound('win'); hubData.iq += svoyaCost; updateHubUI(); document.getElementById('svoya-q').innerText = "Верно!"; }
-else { playSound('fail'); hubData.iq = Math.max(0, hubData.iq - svoyaCost); updateHubUI(); document.getElementById('svoya-q').innerText = "Ошибка!"; }
-}
+    let board15 = [];
+
+    function init15() {
+      board15 = Array.from({ length: 15 }, (_, i) => i + 1);
+      board15.push('');
+      board15.sort(() => Math.random() - 0.5);
+      render15();
+    }
+
+    function render15() {
+      const grid = document.getElementById('grid-15');
+      grid.innerHTML = '';
+
+      board15.forEach((value, index) => {
+        const cell = document.createElement('div');
+        cell.className = `tile-15 ${value === '' ? 'empty' : ''}`;
+        cell.innerText = value === '' ? '' : value;
+        cell.onclick = () => move15(index);
+        grid.appendChild(cell);
+      });
+    }
+
+    function move15(index) {
+      const emptyIndex = board15.indexOf('');
+      const validMoves = [index - 1, index + 1, index - 4, index + 4];
+
+      if (!validMoves.includes(emptyIndex)) return;
+
+      playSound('click');
+      [board15[index], board15[emptyIndex]] = [board15[emptyIndex], board15[index]];
+      render15();
+
+      if (board15.slice(0, 15).every((value, idx) => value === idx + 1)) {
+        playSound('win');
+        hubData.cups += 1;
+        updateHubUI();
+        alert('Победа! Кубок ваш!');
+      }
+    }
+
+    let matchItems = ['👾','👾','🚀','🚀','⚡','⚡','🛡️','🛡️','💎','💎','🍎','🍎','🎈','🎈','🍀','🍀'];
+    let selTiles = [];
+
+    function initMatch() {
+      matchItems = [...matchItems].sort(() => Math.random() - 0.5);
+      const grid = document.getElementById('grid-match');
+      grid.innerHTML = '';
+      selTiles = [];
+
+      matchItems.forEach((item, idx) => {
+        const cell = document.createElement('div');
+        cell.className = 'tile-match';
+        cell.innerText = '❓';
+        cell.onclick = () => {
+          if (cell.classList.contains('flipped') || selTiles.length >= 2) return;
+          playSound('click');
+          cell.innerText = item;
+          cell.classList.add('flipped');
+          selTiles.push(cell);
+
+          if (selTiles.length === 2) {
+            if (selTiles[0].innerText === selTiles[1].innerText) {
+              selTiles = [];
+              if (document.querySelectorAll('.tile-match.flipped').length === 16) {
+                playSound('win');
+                hubData.stickers += 1;
+                updateHubUI();
+                alert('Найдено! +1 Стикер!');
+              }
+            } else {
+              playSound('fail');
+              setTimeout(() => {
+                selTiles.forEach((tile) => {
+                  tile.innerText = '❓';
+                  tile.classList.remove('flipped');
+                });
+                selTiles = [];
+              }, 600);
+            }
+          }
+        };
+
+        grid.appendChild(cell);
+      });
+    }
+
+    const sudSol = [1, 2, 3, 4, 3, 4, 1, 2, 2, 1, 4, 3, 4, 3, 2, 1];
+
+    function initSudoku() {
+      const grid = document.getElementById('grid-sudoku');
+      grid.innerHTML = '';
+      document.getElementById('sudoku-status').innerText = '';
+
+      for (let i = 0; i < 16; i++) {
+        const input = document.createElement('input');
+        input.type = 'number';
+        input.className = 'cell-sudoku';
+        input.min = '1';
+        input.max = '4';
+        input.value = '';
+        input.dataset.index = String(i);
+
+        if ([0, 5, 10, 15].includes(i)) {
+          input.value = sudSol[i];
+          input.disabled = true;
+        }
+
+        grid.appendChild(input);
+      }
+    }
+
+    function checkSudoku() {
+      const cells = document.querySelectorAll('.cell-sudoku');
+      let correct = true;
+
+      cells.forEach((cell, idx) => {
+        const value = parseInt(cell.value, 10);
+        if (Number.isNaN(value) || value !== sudSol[idx]) {
+          correct = false;
+        }
+      });
+
+      if (correct) {
+        playSound('win');
+        hubData.iq += 100;
+        updateHubUI();
+        document.getElementById('sudoku-status').innerText = 'Верно! +100 IQ';
+      } else {
+        playSound('fail');
+        document.getElementById('sudoku-status').innerText = 'Ошибка! Попробуйте ещё раз.';
+      }
+    }
+
+    let poleSecret = 'БРАУЗЕР';
+    let poleDisp = ['_', '_', '_', '_', '_', '_', '_', '_'];
+    let wheelVal = 0;
+
+    function initPole() {
+      poleDisp = ['_', '_', '_', '_', '_', '_', '_', '_'];
+      document.getElementById('pole-word').innerText = poleDisp.join(' ');
+      document.getElementById('pole-status').innerText = 'На барабане: 0 Кристаллов';
+      document.getElementById('pole-input').value = '';
+      poleSecret = 'БРАУЗЕР';
+      wheelVal = 0;
+    }
+
+    function spinWheel() {
+      playSound('click');
+      const wheel = document.getElementById('wheel');
+      const rotate = Math.floor(Math.random() * 360) + 720;
+      wheel.style.transform = `rotate(${rotate}deg)`;
+
+      setTimeout(() => {
+        const values = [100, 200, 500];
+        wheelVal = values[Math.floor(Math.random() * values.length)];
+        document.getElementById('pole-status').innerText = `На барабане: ${wheelVal} Кристаллов!`;
+      }, 3000);
+    }
+
+    function guessLetter() {
+      const input = document.getElementById('pole-input').value.trim().toUpperCase();
+      const poleWord = document.getElementById('pole-word');
+      document.getElementById('pole-input').value = '';
+
+      if (!input) return;
+
+      let found = false;
+      for (let i = 0; i < poleSecret.length; i++) {
+        if (poleSecret[i] === input && poleDisp[i] === '_') {
+          poleDisp[i] = input;
+          found = true;
+        }
+      }
+
+      poleWord.innerText = poleDisp.join(' ');
+
+      if (found) {
+        playSound('win');
+        if (wheelVal > 0) {
+          hubData.crystals += wheelVal;
+          updateHubUI();
+        }
+      } else {
+        playSound('fail');
+      }
+
+      if (!poleDisp.includes('_')) {
+        alert('Вы выиграли Главный Приз: Автомобиль! 🚗');
+      }
+    }
+
+    let mStep = 0;
+    const mQ = [
+      { q: 'Что такое HTML?', a: ['Язык разметки', 'Язык программирования', 'База данных', 'Стиль'], c: 0, p: 1000 },
+      { q: 'Где хранятся стили сайта?', a: ['HTML', 'CSS', 'JS', 'PHP'], c: 1, p: 5000 }
+    ];
+
+    function initMillion() {
+      mStep = 0;
+      showMQ();
+    }
+
+    function showMQ() {
+      const d = mQ[mStep];
+      document.getElementById('mill-prize').innerText = `Вопрос на: $${d.p}`;
+      document.getElementById('mill-question').innerText = d.q;
+
+      const options = document.getElementById('mill-options');
+      options.innerHTML = '';
+
+      d.a.forEach((option, idx) => {
+        const button = document.createElement('button');
+        button.className = 'quiz-option';
+        button.innerText = option;
+        button.onclick = () => {
+          if (idx === d.c) {
+            playSound('win');
+            if (mStep === mQ.length - 1) {
+              hubData.money += d.p;
+              updateHubUI();
+              alert('Вы выиграли миллион!');
+              closeGame();
+            } else {
+              mStep += 1;
+              showMQ();
+            }
+          } else {
+            playSound('fail');
+            alert('Игра окончена!');
+            closeGame();
+          }
+        };
+        options.appendChild(button);
+      });
+    }
+
+    let svoyaCost = 0;
+    let svoyaAns = '';
+    const svoyaDb = {
+      100: { q: 'Спутник Земли?', a: 'Луна' },
+      300: { q: 'Столица России?', a: 'Москва' },
+      500: { q: 'Создатель Linux?', a: 'Линус Торвальдс' }
+    };
+
+    function askSvoya(c) {
+      playSound('click');
+      svoyaCost = c;
+      const d = svoyaDb[c];
+      document.getElementById('svoya-q').innerText = d.q;
+      svoyaAns = d.a;
+      document.getElementById('svoya-zone').classList.remove('hidden');
+      document.getElementById('svoya-input').value = '';
+    }
+
+    function checkSvoya() {
+      const input = document.getElementById('svoya-input').value.trim();
+      document.getElementById('svoya-input').value = '';
+      document.getElementById('svoya-zone').classList.add('hidden');
+
+      if (input.toLowerCase() === svoyaAns.toLowerCase()) {
+        playSound('win');
+        hubData.iq += svoyaCost;
+        document.getElementById('svoya-q').innerText = 'Верно!';
+        updateHubUI();
+      } else {
+        playSound('fail');
+        hubData.iq = Math.max(0, hubData.iq - svoyaCost);
+        document.getElementById('svoya-q').innerText = 'Ошибка!';
+        updateHubUI();
+      }
+    }
+
+    updateHubUI();
+  </script>
+</body>
+</html>
